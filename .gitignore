@@ -107,5 +107,4 @@ InitTestScene*.unity*
 *.dylib
 /RangeOps/Library
 RangeOps/Library/ArtifactDB
-/RangeOps
 /RangeOps/Library
