@@ -1,18 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Interfaces;
+using TMPro;
 
 namespace Game.Interaction
 {
-    /// <summary>
-    /// Listens to Interactor.OnTargetChanged only. Knows nothing about
-    /// inventory, items, or pickup logic — purely reflects "what am I looking at".
-    /// </summary>
     public class InteractionPromptUI : MonoBehaviour
     {
         [SerializeField] private Interactor interactor;
         [SerializeField] private GameObject promptRoot;
-        [SerializeField] private Text promptText; // or TMP_Text if using TextMeshPro
+        [SerializeField] private TMP_Text promptText;
 
         private void OnEnable()
         {

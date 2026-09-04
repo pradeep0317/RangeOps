@@ -4,11 +4,6 @@ using Game.Inventory;
 
 namespace Game.Items
 {
-    /// <summary>
-    /// Sits on any pickup-able object in the world (gun on the rack, ammo box,
-    /// medkit). Knows nothing about inventory internals — it just asks the
-    /// player's InventorySystem to add itself and reports success/fail.
-    /// </summary>
     [RequireComponent(typeof(Collider))]
     public class WorldItem : MonoBehaviour, IInteractable
     {
@@ -17,23 +12,65 @@ namespace Game.Items
 
         public string GetInteractionPrompt()
         {
-            return quantity > 1
-                ? $"Press E to pick up {itemData.displayName} x{quantity}"
-                : $"Press E to pick up {itemData.displayName}";
+            if (quantity > 1)
+                return $"Press E to pick up {itemData.displayName} x{quantity}";
+
+            return $"Press E to pick up {itemData.displayName}";
         }
 
         public void Interact(GameObject interactor)
         {
-            var inventory = interactor.GetComponent<PlayerInventoryHolder>()?.Inventory;
-            if (inventory == null) return;
+            if (itemData == null)
+                return;
 
-            bool added = inventory.TryAddItem(itemData, quantity);
-            if (added)
+            // Primary / Secondary
+            if (itemData.category == ItemCategory.Primary ||
+                itemData.category == ItemCategory.Secondary)
             {
-                gameObject.SetActive(false); // remove from world once picked up
+                EquipmentController equipment =
+                    interactor.GetComponent<EquipmentController>();
+
+                if (equipment == null)
+                    return;
+
+                bool equipped =
+                    equipment.Equip(itemData, gameObject);
+
+                // Don't deactivate.
+                // The same object becomes the held weapon.
+                return;
             }
-            // if not added (inventory full), the UI layer shows feedback via
-            // InventorySystem's OnAddFailed event — WorldItem doesn't need to know why
+
+            // Attachment
+            if (itemData.category == ItemCategory.Attachment)
+            {
+                EquipmentController equipment =
+                    interactor.GetComponent<EquipmentController>();
+
+                if (equipment == null)
+                    return;
+
+                bool equipped =
+                    equipment.EquipAttachment(itemData);
+
+                if (equipped)
+                    gameObject.SetActive(false);
+
+                return;
+            }
+
+            // Ammo
+            PlayerInventoryHolder holder =
+                interactor.GetComponent<PlayerInventoryHolder>();
+
+            if (holder == null)
+                return;
+
+            bool added =
+                holder.Inventory.TryAddItem(itemData, quantity);
+
+            if (added)
+                gameObject.SetActive(false);
         }
     }
 }

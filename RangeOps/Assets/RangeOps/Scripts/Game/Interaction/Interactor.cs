@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using Game.Interfaces;
+using UnityEngine.InputSystem;
+
 
 namespace Game.Interaction
 {
@@ -31,10 +33,11 @@ namespace Game.Interaction
                 OnTargetChanged?.Invoke(currentTarget); // UI shows/hides prompt here
             }
 
-            if (currentTarget != null && Input.GetKeyDown(interactKey))
+            if (currentTarget != null && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             {
                 currentTarget.Interact(gameObject);
                 OnInteracted?.Invoke(currentTarget);
+                Debug.Log("E pressed, target exists");
             }
         }
 

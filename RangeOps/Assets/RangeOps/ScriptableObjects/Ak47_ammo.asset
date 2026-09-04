@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2213bded02404689557e0a9427274, type: 3}
+  m_Name: Ak47_ammo
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ItemData
+  itemId: AK-Ammo
+  displayName: AK-Ammo
+  icon: {fileID: 21300000, guid: b6ee6497b33d3e94e838c462c02749f0, type: 3}
+  category: 2
+  worldPrefab: {fileID: 1769772400217593367, guid: a519f03aee53c45bebfe44df6939bd67, type: 3}
+  isStackable: 1
+  maxStackSize: 30
+  ammoType: {fileID: 0}
+  magazineCapacity: 30
+  attachmentType: 0
+  compatibleWeapons: []
+  compatibleAmmoWeapons:
+  - {fileID: 11400000}

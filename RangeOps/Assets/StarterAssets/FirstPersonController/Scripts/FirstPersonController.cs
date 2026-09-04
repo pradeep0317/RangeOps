@@ -112,14 +112,20 @@ namespace StarterAssets
 
 		private void Update()
 		{
-			JumpAndGravity();
-			GroundedCheck();
-			Move();
+			if (_input.inputEnabled)
+			{
+				JumpAndGravity();
+				GroundedCheck();
+				Move();
+			}
 		}
 
 		private void LateUpdate()
 		{
-			CameraRotation();
+			if (_input.inputEnabled)
+			{
+				CameraRotation();
+			}
 		}
 
 		private void GroundedCheck()

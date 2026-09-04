@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2213bded02404689557e0a9427274, type: 3}
+  m_Name: Sniper_Ammo
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ItemData
+  itemId: Sniper_Ammo
+  displayName: Sniper_Ammo
+  icon: {fileID: 21300000, guid: 6e3ffce1023747c4187342daaceae0f2, type: 3}
+  category: 2
+  worldPrefab: {fileID: 291931938240850480, guid: ee95ecdc143c946fdac8b8c458b70983, type: 3}
+  isStackable: 1
+  maxStackSize: 30
+  ammoType: {fileID: 0}
+  magazineCapacity: 30
+  attachmentType: 0
+  compatibleWeapons: []
+  compatibleAmmoWeapons:
+  - {fileID: 11400000, guid: 8a750f1bcd43aea4fb2d5ce6ce5add48, type: 2}

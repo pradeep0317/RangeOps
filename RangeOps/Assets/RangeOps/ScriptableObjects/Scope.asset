@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2213bded02404689557e0a9427274, type: 3}
+  m_Name: Scope
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ItemData
+  itemId: sniper-scope
+  displayName: sniper-scope
+  icon: {fileID: 21300000, guid: 0a814d0a62b7edb4ea600f12c1361544, type: 3}
+  category: 3
+  worldPrefab: {fileID: 5221418186195645303, guid: 6b5140e90cca96b4ca7b0dae45e58fef, type: 3}
+  isStackable: 0
+  maxStackSize: 1
+  ammoType: {fileID: 0}
+  magazineCapacity: 30
+  attachmentType: 2
+  compatibleWeapons:
+  - {fileID: 11400000, guid: 8a750f1bcd43aea4fb2d5ce6ce5add48, type: 2}
+  compatibleAmmoWeapons: []

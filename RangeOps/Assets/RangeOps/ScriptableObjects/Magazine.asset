@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd2213bded02404689557e0a9427274, type: 3}
+  m_Name: Magazine
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ItemData
+  itemId: AK-magazine
+  displayName: AK-magazine
+  icon: {fileID: 21300000, guid: 4be223ab2855f4742ab7d3d9d5a2bce1, type: 3}
+  category: 3
+  worldPrefab: {fileID: 263932503921055599, guid: f6311a265ebfe094b84c34021d63e254, type: 3}
+  isStackable: 0
+  maxStackSize: 1
+  ammoType: {fileID: 0}
+  magazineCapacity: 30
+  attachmentType: 1
+  compatibleWeapons:
+  - {fileID: 11400000, guid: 28f464059da346f478bbe40a9d3a8fca, type: 2}
+  compatibleAmmoWeapons: []
