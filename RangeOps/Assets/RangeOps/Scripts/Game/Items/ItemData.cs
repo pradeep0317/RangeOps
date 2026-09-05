@@ -47,6 +47,9 @@ namespace Game.Items
         [Header("Ammo Compatibility")]
         [Tooltip("Weapons that can use this ammo.")]
         public ItemData[] compatibleAmmoWeapons;
+        
+        [Header("Attachment (only used when category == Attachment)")]
+        public string attachmentSlotName; // exact child GameObject name on the gun prefab to toggle
 
         public bool CanAttachTo(ItemData weapon)
         {

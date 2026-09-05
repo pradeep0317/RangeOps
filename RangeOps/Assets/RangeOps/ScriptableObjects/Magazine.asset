@@ -19,9 +19,10 @@ MonoBehaviour:
   worldPrefab: {fileID: 263932503921055599, guid: f6311a265ebfe094b84c34021d63e254, type: 3}
   isStackable: 0
   maxStackSize: 1
-  ammoType: {fileID: 0}
+  ammoType: 
   magazineCapacity: 30
   attachmentType: 1
   compatibleWeapons:
   - {fileID: 11400000, guid: 28f464059da346f478bbe40a9d3a8fca, type: 2}
   compatibleAmmoWeapons: []
+  attachmentSlotName: rifle_magazine_001

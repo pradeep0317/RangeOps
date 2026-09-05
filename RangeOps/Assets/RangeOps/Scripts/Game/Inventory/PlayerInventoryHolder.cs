@@ -4,7 +4,7 @@ namespace Game.Inventory
 {
     public class PlayerInventoryHolder : MonoBehaviour
     {
-        [SerializeField] private int slotCount = 8;
+        [SerializeField] private int slotCount = 6; 
 
         public InventorySystem Inventory { get; private set; }
 

@@ -146,6 +146,34 @@ namespace Game.Inventory
 
             return true;
         }
+        public int GetQuantityForItemId(string itemId)
+        {
+            int total = 0;
+            foreach (var slot in slots)
+            {
+                if (!slot.IsEmpty && slot.Item.itemId == itemId)
+                    total += slot.Quantity;
+            }
+            return total;
+        }
+        public bool TryRemoveQuantity(int slotIndex, int amount, out ItemData removedItem)
+        {
+            removedItem = null;
+            if (slotIndex < 0 || slotIndex >= slots.Length || slots[slotIndex].IsEmpty)
+                return false;
+
+            var slot = slots[slotIndex];
+            removedItem = slot.Item;
+
+            int removeAmount = Math.Min(amount, slot.Quantity);
+            if (removeAmount >= slot.Quantity)
+                slot.Clear();
+            else
+                slot.AddQuantity(-removeAmount);
+
+            OnInventoryChanged?.Invoke();
+            return true;
+        }
 
         private InventorySlot FindEmptySlot()
         {
@@ -157,5 +185,6 @@ namespace Game.Inventory
 
             return null;
         }
+        
     }
 }

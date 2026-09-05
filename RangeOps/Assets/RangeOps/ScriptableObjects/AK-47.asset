@@ -19,8 +19,9 @@ MonoBehaviour:
   worldPrefab: {fileID: 4247480292809015788, guid: 115b77170cd48694aa3f37e4d559ffe1, type: 3}
   isStackable: 0
   maxStackSize: 1
-  ammoType: {fileID: 11400000, guid: fe3a7480b763a5e4aa8501fb21fc7917, type: 2}
+  ammoType: AK-Ammo
   magazineCapacity: 30
   attachmentType: 0
   compatibleWeapons: []
   compatibleAmmoWeapons: []
+  attachmentSlotName: rifle_magazine_001

@@ -8,6 +8,8 @@ namespace Game.Inventory
         [Header("UI")]
         [SerializeField] private GameObject backpackPanel;
         [SerializeField] private GameObject inventoryUI;
+        
+        [SerializeField] private GameObject crosshair;
 
         [Header("Player")]
         [SerializeField] private StarterAssetsInputs playerInput;
@@ -27,6 +29,9 @@ namespace Game.Inventory
             backpackPanel.SetActive(false);
             inventoryUI.SetActive(true);
 
+            if (crosshair != null)
+                crosshair.SetActive(false);
+
             if (playerInput != null)
                 playerInput.SetInputEnabled(false);
 
@@ -38,6 +43,9 @@ namespace Game.Inventory
         {
             inventoryUI.SetActive(false);
             backpackPanel.SetActive(true);
+
+            if (crosshair != null)
+                crosshair.SetActive(true);
 
             if (playerInput != null)
                 playerInput.SetInputEnabled(true);

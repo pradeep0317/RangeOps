@@ -18,8 +18,8 @@ MonoBehaviour:
   category: 2
   worldPrefab: {fileID: 3111123709821073303, guid: e43b9a471c8274a8fac6ae35c666fd0b, type: 3}
   isStackable: 1
-  maxStackSize: 30
-  ammoType: {fileID: 0}
+  maxStackSize: 2
+  ammoType: Shotgun-ammo
   magazineCapacity: 30
   attachmentType: 0
   compatibleWeapons: []

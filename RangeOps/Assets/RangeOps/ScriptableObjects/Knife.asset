@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dd2213bded02404689557e0a9427274, type: 3}
   m_Name: Knife
   m_EditorClassIdentifier: Assembly-CSharp::Game.Items.ItemData
-  itemId: 
-  displayName: 
-  icon: {fileID: 0}
+  itemId: Knife
+  displayName: Knife
+  icon: {fileID: 21300000, guid: c4a41065263445d419ecd14f77b9d516, type: 3}
   category: 1
-  worldPrefab: {fileID: 0}
+  worldPrefab: {fileID: 7079919218563593500, guid: 0bcdc7d174ff79641a4487a022f363d6, type: 3}
   isStackable: 0
   maxStackSize: 1
+  ammoType: 
+  magazineCapacity: 0
+  attachmentType: 0
+  compatibleWeapons: []
+  compatibleAmmoWeapons: []

@@ -18,8 +18,8 @@ MonoBehaviour:
   category: 2
   worldPrefab: {fileID: 291931938240850480, guid: ee95ecdc143c946fdac8b8c458b70983, type: 3}
   isStackable: 1
-  maxStackSize: 30
-  ammoType: {fileID: 0}
+  maxStackSize: 2
+  ammoType: Sniper_Ammo
   magazineCapacity: 30
   attachmentType: 0
   compatibleWeapons: []

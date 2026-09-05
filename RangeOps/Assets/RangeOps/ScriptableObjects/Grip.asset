@@ -19,9 +19,10 @@ MonoBehaviour:
   worldPrefab: {fileID: 8723140022207642106, guid: 91917936023d8d44698236efd68648ff, type: 3}
   isStackable: 0
   maxStackSize: 1
-  ammoType: {fileID: 0}
+  ammoType: 
   magazineCapacity: 30
-  attachmentType: 3
+  attachmentType: 2
   compatibleWeapons:
   - {fileID: 11400000, guid: eb690a454af8b7740b483ac33627970b, type: 2}
   compatibleAmmoWeapons: []
+  attachmentSlotName: shotgun_handguard_001

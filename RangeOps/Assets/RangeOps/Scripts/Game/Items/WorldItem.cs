@@ -20,57 +20,43 @@ namespace Game.Items
 
         public void Interact(GameObject interactor)
         {
-            if (itemData == null)
-                return;
-
-            // Primary / Secondary
-            if (itemData.category == ItemCategory.Primary ||
-                itemData.category == ItemCategory.Secondary)
+            if (itemData.category == ItemCategory.Primary || itemData.category == ItemCategory.Secondary)
             {
-                EquipmentController equipment =
-                    interactor.GetComponent<EquipmentController>();
+                var equipment = interactor.GetComponent<EquipmentController>();
+                if (equipment == null) return;
 
-                if (equipment == null)
-                    return;
-
-                bool equipped =
-                    equipment.Equip(itemData, gameObject);
-
-                // Don't deactivate.
-                // The same object becomes the held weapon.
+                equipment.Equip(itemData, gameObject);
                 return;
             }
 
-            // Attachment
             if (itemData.category == ItemCategory.Attachment)
             {
-                EquipmentController equipment =
-                    interactor.GetComponent<EquipmentController>();
+                var equipment = interactor.GetComponent<EquipmentController>();
+                if (equipment == null) return;
 
-                if (equipment == null)
-                    return;
-
-                bool equipped =
-                    equipment.EquipAttachment(itemData);
-
+                bool equipped = equipment.EquipAttachment(itemData);
                 if (equipped)
-                    gameObject.SetActive(false);
+                {
+                    var rb = GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = true;
+                        rb.detectCollisions = false;
+                    }
 
+                    gameObject.SetActive(false);
+                }
                 return;
             }
 
-            // Ammo
-            PlayerInventoryHolder holder =
-                interactor.GetComponent<PlayerInventoryHolder>();
+            var inventory = interactor.GetComponent<PlayerInventoryHolder>()?.Inventory;
+            if (inventory == null) return;
 
-            if (holder == null)
-                return;
-
-            bool added =
-                holder.Inventory.TryAddItem(itemData, quantity);
-
+            bool added = inventory.TryAddItem(itemData, quantity);
             if (added)
+            {
                 gameObject.SetActive(false);
+            }
         }
     }
 }

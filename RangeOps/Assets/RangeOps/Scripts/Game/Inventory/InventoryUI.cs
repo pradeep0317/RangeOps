@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using EasyUI.Toast;
 using Game.Items;
 
 namespace Game.Inventory
@@ -9,6 +10,9 @@ namespace Game.Inventory
     {
         [Header("Inventory")]
         [SerializeField] private PlayerInventoryHolder inventoryHolder;
+
+        [Header("Equipment (assign directly - do not rely on GetComponent)")]
+        [SerializeField] private EquipmentController equipment;
 
         [Header("Primary Weapon")]
         [SerializeField] private Image primaryWeaponImage;
@@ -23,28 +27,27 @@ namespace Game.Inventory
         [SerializeField] private Image gripImage;
         [SerializeField] private Image scopeImage;
 
-        [Header("Dynamic Component Area")]
+        [Header("Dynamic Component Slots")]
         [SerializeField] private Transform componentParent;
         [SerializeField] private GameObject componentPrefab;
-
-        [Header("Visual Split")]
-        [SerializeField] private int visualChunkSize = 10;
+        [SerializeField] private RectTransform dropZone;
+        [SerializeField] private int chunkSize = 10;
 
         private InventorySystem inventory;
-        private EquipmentController equipment;
 
         private void Start()
         {
+            // InventoryUI.Start()-
+           
             inventory = inventoryHolder.Inventory;
-
-            equipment =
-                inventoryHolder.GetComponent<EquipmentController>();
 
             inventory.OnInventoryChanged += RefreshUI;
             inventory.OnAddFailed += ShowFullWarning;
 
             if (equipment != null)
                 equipment.OnEquipmentChanged += RefreshUI;
+            
+            Debug.Log($"InventoryUI watching: {inventoryHolder.gameObject.name}, instance ID: {inventory.GetHashCode()}");
 
             RefreshUI();
         }
@@ -69,35 +72,28 @@ namespace Game.Inventory
 
         private void RefreshEquipment()
         {
-            // PRIMARY WEAPON
-            if (equipment != null &&
-                equipment.CurrentPrimary != null)
+            if (equipment != null && equipment.CurrentPrimary != null)
             {
                 primaryWeaponImage.gameObject.SetActive(true);
+                primaryWeaponImage.sprite = equipment.CurrentPrimary.icon;
 
-                primaryWeaponImage.sprite =
-                    equipment.CurrentPrimary.icon;
+                int totalAmmo = string.IsNullOrEmpty(equipment.CurrentPrimary.ammoType)
+                    ? 0
+                    : inventory.GetQuantityForItemId(equipment.CurrentPrimary.ammoType);
 
-                primaryAmmoText.text =
-                    $"{equipment.CurrentAmmo}/" +
-                    $"{equipment.CurrentPrimary.magazineCapacity}";
+                if (primaryAmmoText != null)
+                    primaryAmmoText.text = totalAmmo.ToString();
             }
             else
             {
                 primaryWeaponImage.gameObject.SetActive(false);
-
-                if (primaryAmmoText != null)
-                    primaryAmmoText.text = "";
+                if (primaryAmmoText != null) primaryAmmoText.text = "";
             }
 
-            // SECONDARY WEAPON
-            if (equipment != null &&
-                equipment.CurrentSecondary != null)
+            if (equipment != null && equipment.CurrentSecondary != null)
             {
                 secondaryWeaponImage.gameObject.SetActive(true);
-
-                secondaryWeaponImage.sprite =
-                    equipment.CurrentSecondary.icon;
+                secondaryWeaponImage.sprite = equipment.CurrentSecondary.icon;
             }
             else
             {
@@ -106,184 +102,155 @@ namespace Game.Inventory
 
             RefreshAttachments();
         }
-        
+
         private void RefreshAttachments()
         {
-            if (equipment == null ||
-                equipment.CurrentPrimary == null)
+            if (equipment == null || equipment.CurrentPrimary == null)
             {
                 attachmentPanel.SetActive(false);
                 return;
             }
 
-            bool hasAttachment =
-                equipment.CurrentMagazine != null ||
-                equipment.CurrentGrip != null ||
-                equipment.CurrentScope != null;
-
+            bool hasAttachment = equipment.CurrentMagazine != null || equipment.CurrentGrip != null || equipment.CurrentScope != null;
             attachmentPanel.SetActive(hasAttachment);
 
-            // MAGAZINE
             if (equipment.CurrentMagazine != null)
             {
                 magazineImage.gameObject.SetActive(true);
-
-                magazineImage.sprite =
-                    equipment.CurrentMagazine.icon;
+                magazineImage.sprite = equipment.CurrentMagazine.icon;
             }
-            else
-            {
-                magazineImage.gameObject.SetActive(false);
-            }
+            else magazineImage.gameObject.SetActive(false);
 
-            // GRIP
             if (equipment.CurrentGrip != null)
             {
                 gripImage.gameObject.SetActive(true);
-
-                gripImage.sprite =
-                    equipment.CurrentGrip.icon;
+                gripImage.sprite = equipment.CurrentGrip.icon;
             }
-            else
-            {
-                gripImage.gameObject.SetActive(false);
-            }
+            else gripImage.gameObject.SetActive(false);
 
-            // SCOPE
             if (equipment.CurrentScope != null)
             {
                 scopeImage.gameObject.SetActive(true);
-
-                scopeImage.sprite =
-                    equipment.CurrentScope.icon;
+                scopeImage.sprite = equipment.CurrentScope.icon;
             }
-            else
-            {
-                scopeImage.gameObject.SetActive(false);
-            }
+            else scopeImage.gameObject.SetActive(false);
         }
-
-       
 
         private void RefreshComponents()
         {
-            if (componentParent == null ||
-                componentPrefab == null ||
-                inventory == null)
+            if (componentParent == null || componentPrefab == null || inventory == null)
                 return;
 
-            // Remove old generated components
             for (int i = componentParent.childCount - 1; i >= 0; i--)
-            {
-                Destroy(
-                    componentParent.GetChild(i).gameObject
-                );
-            }
+                Destroy(componentParent.GetChild(i).gameObject);
 
-            // Read inventory
-            foreach (InventorySlot slot in inventory.Slots)
+            var slots = inventory.Slots;
+
+            for (int slotIndex = 0; slotIndex < slots.Count; slotIndex++)
             {
-                if (slot.IsEmpty)
-                    continue;
+                InventorySlot slot = slots[slotIndex];
+                if (slot.IsEmpty) continue;
 
                 int remaining = slot.Quantity;
 
                 while (remaining > 0)
                 {
-                    int amount;
-
-                    // Stackable item
-                    if (slot.Item.isStackable)
-                    {
-                        amount = Mathf.Min(
-                            remaining,
-                            visualChunkSize
-                        );
-                    }
-                    else
-                    {
-                        amount = 1;
-                    }
-
-                    CreateComponent(
-                        slot.Item,
-                        amount
-                    );
-
+                    int amount = slot.Item.isStackable ? Mathf.Min(remaining, chunkSize) : remaining;
+                    CreateComponent(slot.Item, amount, slotIndex);
                     remaining -= amount;
                 }
             }
         }
-
-        private void CreateComponent(
-            ItemData item,
-            int quantity)
+        private void CreateComponent(ItemData item, int amount, int slotIndex)
         {
-            GameObject component =
-                Instantiate(
-                    componentPrefab,
-                    componentParent
-                );
+            GameObject go = Instantiate(componentPrefab, componentParent);
 
-            // Find elements inside the newly created prefab
-            Image image =
-                component.transform
-                    .Find("Component_Image")
-                    ?.GetComponent<Image>();
-
-            TMP_Text count =
-                component.transform
-                    .Find("Component_Count_Text")
-                    ?.GetComponent<TMP_Text>();
-
-            TMP_Text name =
-                component.transform
-                    .Find("Component_Name_Text")
-                    ?.GetComponent<TMP_Text>();
-
-            // IMAGE
-            if (image != null)
+            // lists every component on every object named Component_Count_Text
+            var allTransforms = go.GetComponentsInChildren<Transform>(true);
+            foreach (var t in allTransforms)
             {
-                image.sprite = item.icon;
-                image.gameObject.SetActive(true);
+                if (t.name == "Component_Count_Text")
+                {
+                    var comps = t.GetComponents<Component>();
+                    Debug.Log($"Components on '{t.name}': {string.Join(", ", System.Array.ConvertAll(comps, c => c.GetType().Name))}");
+                }
             }
 
-            // COUNT
-            if (count != null)
+            var images = go.GetComponentsInChildren<Image>(true);
+            Image iconImage = System.Array.Find(images, img => img.gameObject.name == "Component_Image");
+            if (iconImage != null)
             {
-                count.text = quantity.ToString();
+                iconImage.sprite = item.icon;
+                iconImage.gameObject.SetActive(true);
             }
 
-            // NAME
-            if (name != null)
-            {
-                name.text = item.displayName;
-            }
+            SetTextByName(go, "Component_Name_Text", item.displayName);
+            SetTextByName(go, "Component_Count_Text", amount > 1 ? amount.ToString() : "");
+
+            DraggableSlot drag = go.GetComponent<DraggableSlot>();
+            if (drag == null) drag = go.AddComponent<DraggableSlot>();
+
+            drag.Configure(DragSlotType.Component, slotIndex, amount, this, dropZone);
         }
-
-      
+                
+                        /// <summary>Finds a TMP_Text or legacy Text component anywhere under root by GameObject
+                        /// name, using GetComponentsInChildren (reliable regardless of nesting depth) instead
+                        /// of Transform.Find/manual recursion.</summary>
+                        private static void SetTextByName(GameObject root, string childName, string value)
+                        {
+                            var tmps = root.GetComponentsInChildren<TMP_Text>(true);
+                            var tmp = System.Array.Find(tmps, t => t.gameObject.name == childName);
+                            if (tmp != null)
+                            {
+                                tmp.text = value;
+                                tmp.gameObject.SetActive(true);
+                                return;
+                            }
+                
+                            var texts = root.GetComponentsInChildren<Text>(true);
+                            var legacy = System.Array.Find(texts, t => t.gameObject.name == childName);
+                            if (legacy != null)
+                            {
+                                legacy.text = value;
+                                legacy.gameObject.SetActive(true);
+                                return;
+                            }
+                
+                            Debug.LogWarning($"No TMP_Text or Text component found on any child named '{childName}'");
+                        }
 
         private void ShowFullWarning(ItemData item)
         {
-            Debug.Log(
-                $"Backpack Full - Can't pick up {item.displayName}"
-            );
+            Toast.Show($"Bag Full - can't pick up {item.displayName}");
         }
-
-      
 
         public void OnDropButtonPressed(int slotIndex)
         {
-            if (inventory.TryRemoveFromSlot(
-                slotIndex,
-                out ItemData item,
-                out int quantity))
+            if (inventory.TryRemoveFromSlot(slotIndex, out ItemData item, out int quantity))
             {
-                DropHandler.SpawnDroppedItem(
-                    item,
-                    quantity,
-                    inventoryHolder.transform
-                );
+                DropHandler.SpawnDroppedItem(item, quantity, inventoryHolder.transform);
+            }
+        }
+
+        public void HandleSlotDropped(DragSlotType type, int slotIndex, int chunkAmount, AttachmentType attachmentType = AttachmentType.None)
+        {
+            switch (type)
+            {
+                case DragSlotType.Primary:
+                    equipment?.DropEquipped(ItemCategory.Primary);
+                    break;
+                case DragSlotType.Secondary:
+                    equipment?.DropEquipped(ItemCategory.Secondary);
+                    break;
+                case DragSlotType.Component:
+                    if (inventory.TryRemoveQuantity(slotIndex, chunkAmount, out ItemData removedItem))
+                    {
+                        DropHandler.SpawnDroppedItem(removedItem, chunkAmount, inventoryHolder.transform);
+                    }
+                    break;
+                case DragSlotType.Attachment:
+                    equipment?.DropAttachment(attachmentType);
+                    break;
             }
         }
     }
